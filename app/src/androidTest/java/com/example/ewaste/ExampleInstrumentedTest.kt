@@ -1,4 +1,4 @@
-package com.example.e_waste
+package com.example.ewaste
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

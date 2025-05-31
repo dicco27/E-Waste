@@ -1,4 +1,4 @@
-package com.example.e_waste
+package com.example.ewaste
 
 import org.junit.Test
 
