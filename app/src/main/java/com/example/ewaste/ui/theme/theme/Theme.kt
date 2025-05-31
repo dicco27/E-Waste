@@ -1,4 +1,4 @@
-package com.example.ewaste.ui.theme
+package com.example.ewaste.ui.theme.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

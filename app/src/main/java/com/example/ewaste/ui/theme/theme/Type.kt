@@ -1,4 +1,4 @@
-package com.example.ewaste.ui.theme
+package com.example.ewaste.ui.theme.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

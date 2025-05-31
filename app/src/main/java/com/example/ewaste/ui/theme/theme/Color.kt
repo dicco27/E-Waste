@@ -1,4 +1,4 @@
-package com.example.ewaste.ui.theme
+package com.example.ewaste.ui.theme.theme
 
 import androidx.compose.ui.graphics.Color
 
