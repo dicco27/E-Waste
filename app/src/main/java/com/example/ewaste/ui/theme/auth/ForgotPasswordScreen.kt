@@ -10,10 +10,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.ewaste.ui.theme.viewmodel.ForgotPasswordViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotPasswordScreen(navController: NavController) {
+fun ForgotPasswordScreen(navController: NavController, viewModel: ForgotPasswordViewModel) {
     var email by remember { mutableStateOf(TextFieldValue("")) }
 
     Scaffold(

@@ -11,18 +11,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel
+) {
+    val state by viewModel.loginState
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var rememberMe by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -43,9 +47,10 @@ fun LoginScreen(navController: NavController) {
                 .padding(padding)
                 .padding(24.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.weight(0.5f)) // Beri sedikit ruang di atas
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -64,8 +69,9 @@ fun LoginScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
+                    val icon = if (showPassword) "🙈" else "👁️"
                     Text(
-                        text = if (showPassword) "🙈" else "👁",
+                        text = icon,
                         modifier = Modifier
                             .clickable { showPassword = !showPassword }
                             .padding(end = 8.dp)
@@ -74,39 +80,55 @@ fun LoginScreen(navController: NavController) {
                 singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            // --- TAMBAHKAN TEKS "LUPA KATA SANDI" DI SINI ---
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                contentAlignment = Alignment.CenterEnd
             ) {
-                Checkbox(checked = rememberMe, onCheckedChange = { rememberMe = it })
-                Text(text = "Ingat Saya")
-                Spacer(modifier = Modifier.weight(1f))
-
-                TextButton(onClick = { navController.navigate("forgot") }) {
-                    Text("Lupa Kata Sandi?", color = Color(0xFF2E7D32))
-                }
+                Text(
+                    text = "Lupa Kata Sandi?",
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable { navController.navigate("forgot") }
+                )
             }
+            // ----------------------------------------------------
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
+                    viewModel.login(email, password)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                enabled = state !is LoginState.Loading
             ) {
                 Text("Log in", color = Color.White)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            when (val currentState = state) {
+                is LoginState.Loading -> CircularProgressIndicator()
+                is LoginState.Success -> {
+                    LaunchedEffect(Unit) {
+                        navController.navigate("home") {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
+                    }
+                }
+                is LoginState.Error -> {
+                    Text(text = currentState.message, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
+                }
+                else -> {}
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -115,10 +137,8 @@ fun LoginScreen(navController: NavController) {
                 Text("Belum Punya Akun? ")
                 Text(
                     text = "Daftar",
-                    color = Color(0xFF2E7D32),
-                    modifier = Modifier.clickable {
-                        navController.navigate("register")
-                    }
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable { navController.navigate("register") }
                 )
             }
         }

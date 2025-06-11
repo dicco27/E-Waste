@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.ewaste.ui.theme.EWasteTheme
-import com.example.ewaste.ui.theme.navigation.AppNavigation
+import com.example.ewaste.ui.theme.navigation.AppNavigation // <-- PERBAIKI IMPORT INI
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    AppNavigation(navController)
+                    AppNavigation(navController = navController) // Panggil fungsi yang benar
                 }
             }
         }
